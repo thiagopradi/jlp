@@ -1,68 +1,52 @@
 package lib;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.*;
+import java.util.StringTokenizer;
 
 import model.ApacheLog;
-import model.LogPart;
 
-public class Parser {
-	private LogPart logPart;
-	String logEntryPattern ="";// "^([\d.]+) (\S+) (\S+) \[([\w:/]+\s[+\-]\d{4})\] "(.+?)\" (\d{3}) (\d+) \"([^\"]+)" "([^\"]+)";
-	private Pattern p = Pattern.compile(logEntryPattern);
+public class Parser extends Thread {
+	private LogReader log;
 	
-	public LogPart getLogPart() {
-		return logPart;
-	}
-
-
-	public void setLogPart(LogPart logPart) {
-		this.logPart = logPart;
+	public Parser(LogReader log) {
+		this.log = log;
 	}
 	
-	public Parser(LogPart logPart) {
-		super();
-		this.logPart = logPart;
+	@Override
+	public void run() {
+		String str = null;
+		try {
+			str = log.getLine();
+			
+			while(str != null) 
+				this.parse(str);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
+	public ApacheLog parse(String str) throws IOException {
+		StringTokenizer matcher = new StringTokenizer(str);
+		ApacheLog ap = new ApacheLog();
 
-	public Parser() {
-		// TODO Auto-generated constructor stub
-	}
-
-
-	public List<ApacheLog> parse() throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("/Users/tchandy/Documents/workspace/log_threads/logs.txt"));		
-		ArrayList<ApacheLog> arr = new ArrayList<ApacheLog>();
+		// A cada alteração nesse código, um bebe foca morre degolado.
 		
-		String str;
-        while((str = br.readLine()) != null){
-        	Matcher matcher = p.matcher(str);
+		ap.setIpAddress(matcher.nextToken());	
+		matcher.nextToken();
+		matcher.nextToken(); 
+		ap.setDateTime(matcher.nextToken("\""));
+		ap.setRequest(matcher.nextToken("\""));
+		matcher.nextToken(" ");
+		ap.setResponse(matcher.nextToken());
+		ap.setBytesSent(matcher.nextToken());
+		matcher.nextToken("\"");
+		matcher.nextToken("\"");
+		ap.setReferer( matcher.nextToken("\""));
+		matcher.nextToken(" ");
+		ap.setBrowser(matcher.nextToken("\""));	
 
-    		if (!matcher.matches()) {
-    			System.err.println("Bad log entry (or problem with regex?):");
-    			System.err.println(str);
-    			return null;
-    		}
-    		
-    		ApacheLog ap = new ApacheLog();
-    		ap.setIpAddress(matcher.group(1));	
-    		ap.setDateTime(matcher.group(4));
-    		ap.setRequest(matcher.group(5));
-    		ap.setResponse(matcher.group(6));
-    		ap.setBytesSent(matcher.group(7));
-    		ap.setReferer(matcher.group(8));
-    		ap.setBrowser(matcher.group(9));
-    		
-    		arr.add(ap);
-        }
-       
-        br.close();
-		
-		return arr;
+		return ap;		
 	}
 }

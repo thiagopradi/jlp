@@ -9,8 +9,12 @@ public class mainClass {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		Parser p = new Parser();
-		System.out.println(p.parse().size());
+		LogReader log = new LogReader("/Users/tchandy/Documents/workspace/log_threads/logs.txt");
+		
+		for(int i =0; i < 100; i++) {
+			Parser p = new Parser(log);
+			p.start();
+		}
 	}
 
 }
