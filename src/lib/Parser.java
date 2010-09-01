@@ -32,7 +32,6 @@ public class Parser extends Thread {
 		ApacheLog ap = new ApacheLog();
 
 		// A cada alteração nesse código, um bebe foca morre degolado.
-		
 		ap.setIpAddress(matcher.nextToken());	
 		matcher.nextToken();
 		matcher.nextToken(); 
