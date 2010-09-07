@@ -3,6 +3,8 @@ package controller;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import lib.Results;
 import model.ApacheLog;
 
 
@@ -15,6 +17,7 @@ public class Control {
 	private Lock lock = new ReentrantLock();
 	private Condition full = lock.newCondition();
 	private Condition empty = lock.newCondition();
+	private Results results = new Results();
 	
 	public Control() {
 		begin = end = 0;
@@ -30,8 +33,8 @@ public class Control {
 		end = (end + 1) % size;
 		qtd++;
 		
-		lock.unlock();
 		empty.signalAll();
+		lock.unlock();
 	}
 	
 	public ApacheLog getObject() throws InterruptedException {
@@ -48,5 +51,13 @@ public class Control {
 		lock.unlock();
 		
 		return apacheTemp;
-	}              
+	}
+
+	public Results getResults() {
+		return results;
+	}
+
+	public void setResults(Results results) {
+		this.results = results;
+	}        
 }
