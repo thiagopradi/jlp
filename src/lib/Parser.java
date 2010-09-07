@@ -4,13 +4,17 @@ package lib;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import controller.Control;
+
 import model.ApacheLog;
 
 public class Parser extends Thread {
 	private LogReader log;
+	private Control c;
 	
-	public Parser(LogReader log) {
+	public Parser(LogReader log, Control c) {
 		this.log = log;
+		this.c = c;
 	}
 	
 	@Override
@@ -20,10 +24,11 @@ public class Parser extends Thread {
 			str = log.getLine();
 			
 			while(str != null) 
-				this.parse(str);
+				c.insertObject(this.parse(str));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		} catch (InterruptedException e) {
+
 		}
 	}
 
