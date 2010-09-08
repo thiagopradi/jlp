@@ -9,11 +9,11 @@ import controller.Control;
 import model.ApacheLog;
 
 public class Parser extends Thread {
-	private LogReader log;
+	private LogPartQueue lp;
 	private Control c;
 
-	public Parser(LogReader log, Control c) {
-		this.log = log;
+	public Parser(LogPartQueue lp, Control c) {
+		this.lp = lp;
 		this.c = c;
 	}
 
@@ -21,11 +21,11 @@ public class Parser extends Thread {
 	public void run() {
 		String str = null;
 		try {
-			while((str = log.getLine())!= null) {
-				c.insertObject(this.parse(str));
-			}
+			str = lp.getLine();
+			c.insertObject(this.parse(str));
 		} catch (Exception e) {}
 	}
+
 
 	public ApacheLog parse(String str) throws IOException {
 		StringTokenizer matcher = new StringTokenizer(str);

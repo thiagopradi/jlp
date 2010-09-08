@@ -15,12 +15,13 @@ public class mainClass {
 	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
-		LogReader log = new LogReader("/Users/tchandy/Documents/workspace/log_threads/logs.txt");
+		LogPartQueue lp = new LogPartQueue();
+		LogReader log = new LogReader("/Users/tchandy/Documents/workspace/log_threads/logs.txt", lp);
 		Control c = new Control();
 		IpAddressQueue ip = new IpAddressQueue();
 		
 		for(int i =0; i < 100; i++) {
-			Parser p = new Parser(log, c);
+			Parser p = new Parser(lp, c);
 			p.start();
 			LogResultsWriter lo = new LogResultsWriter(c, ip);
 			lo.start();
@@ -38,8 +39,6 @@ public class mainClass {
 		System.out.println(c.getResults().getResponseCount());
 		System.out.println(c.getResults().getReferers());
 		System.out.println(c.getResults().getDns());
-		
-		
     }
 
    
