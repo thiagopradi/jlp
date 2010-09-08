@@ -24,11 +24,7 @@ public class Parser extends Thread {
 			while((str = log.getLine())!= null) {
 				c.insertObject(this.parse(str));
 			}
-		} catch (IOException e) {
-
-		} catch (InterruptedException e) {
-
-		}
+		} catch (Exception e) {}
 	}
 
 	public ApacheLog parse(String str) throws IOException {
@@ -44,8 +40,8 @@ public class Parser extends Thread {
 			ap.setResponse(matcher.nextToken());
 			ap.setBytesSent(matcher.nextToken());
 			matcher.nextToken("\"");
+			ap.setReferer(matcher.nextToken("\""));
 			matcher.nextToken("\"");
-			ap.setReferer( matcher.nextToken("\""));
 			matcher.nextToken(" ");
 			ap.setBrowser(matcher.nextToken("\""));	
 		} catch(Exception e) {}

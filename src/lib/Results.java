@@ -7,11 +7,8 @@ public class Results {
 	private ConcurrentHashMap<String, Integer> countriesName = new ConcurrentHashMap<String, Integer>();
 	private ConcurrentHashMap<String, Integer> browsers = new ConcurrentHashMap<String, Integer>();
 	private ConcurrentHashMap<String, Integer> responseCount = new ConcurrentHashMap<String, Integer>();
-
-
-	public Results() {
-
-	}
+	private ConcurrentHashMap<String, Integer> referers = new ConcurrentHashMap<String, Integer>();
+	private ConcurrentHashMap<String, String> dns = new ConcurrentHashMap<String, String>();
 
 	public void addBrowserCount(String browser) {
 		if (browser != null) {
@@ -22,6 +19,10 @@ public class Results {
 				browsers.put(browser, value+1);
 			}
 		}
+	}
+
+	public ConcurrentHashMap<String, String> getDns() {
+		return dns;
 	}
 
 	public void addResponseCount(String response) {
@@ -50,6 +51,23 @@ public class Results {
 			countriesName.put(countryName, value+1);
 		}
 	}
+	
+	public void addReferer(String referer) {
+		Integer value = referers.get(referer);
+		if(value == null) {
+			referers.put(referer, 1);
+		} else {
+			referers.put(referer, value+1);
+		}
+	}
+	
+	public void AddHost(String ipAddr, String host) {
+		dns.put(ipAddr, host);
+	}
+	
+	boolean hasHost(String ipaddress) {
+		return dns.containsKey(ipaddress);
+	}
 
 	public ConcurrentHashMap<String, Integer> getCountriesCode() {
 		return countriesCode;
@@ -65,5 +83,9 @@ public class Results {
 
 	public ConcurrentHashMap<String, Integer> getResponseCount() {
 		return responseCount;
+	}
+	
+	public ConcurrentHashMap<String, Integer> getReferers() {
+		return referers;
 	}
 }
